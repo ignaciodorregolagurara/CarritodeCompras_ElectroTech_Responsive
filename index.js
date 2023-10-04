@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let imgProduct = document.getElementById("prodImg");
     let btnActualizar = document.getElementById("btnUpdate");
     let arrayProducts = [];
+    let contenedorList = document.getElementById("list");
 
     fetch(urlJSON)
         .then(function(response) {
@@ -14,11 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         .then(function(data) {
-            
-            arrayProducts = data.products;
+            arrayProducts = data.products;   
             showProducts(arrayProducts);
-
-            
         })
         .catch(function(error) {
             if (error.message === "No se pudo cargar el producto") {
@@ -27,18 +25,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     function showProducts(array) {
-        let contenedorList = document.getElementById("list");
         let htmlContentToAppend = "";
-
         for (let i = 0; i < array.length; i++) {
             let producto = array[i];
-            htmlContentToAppend += `<option>${producto.name}</option>`;
+            htmlContentToAppend += `<option id="opcion">${producto.name}</option>`;
         }
         contenedorList.innerHTML = htmlContentToAppend;
     }
 
-    function productoSeleccionado(){
+    contenedorList.addEventListener("change", function () {
         let productoSelec = contenedorList.options[contenedorList.selectedIndex].text;
         console.log(productoSelec);
-    };
+        let auxNom = "";
+        let auxFoto = "";
+        let productoSeleccionado = arrayProducts.find(producto => producto.name === productoSelec);
+        console.log(productoSeleccionado);
+        console.log(productoSeleccionado.image);
+        auxNom += `<p>${productoSeleccionado.name}</p>`;
+        auxFoto += `<img src="${productoSeleccionado.image}" alt="${productoSeleccionado.name}"></img>`;
+        nomProucto.innerHTML = auxNom;
+        imgProduct.src = productoSeleccionado.image;
+    });
 });
